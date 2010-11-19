@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>net.sourceforge.sizeof</groupId>
+    <artifactId>sizeof</artifactId>
+    <name>SizeOf</name>
+    <description>
+        java.SizeOf is a simple java agent what can be used to calculate the
+        memory size of java objects. The agent is implemented with the
+        java.lang.instrument introduced with java 5.
+    </description>
+    <version>0.2.2</version>
+    <url>http://sourceforge.net/projects/sizeof</url>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <configuration>
+                        <source>1.5</source>
+                        <target>1.5</target>
+                        <showWarnings>true</showWarnings>
+                        <showDeprecation>true</showDeprecation>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>2.1</version>
+                    <configuration>
+                        <archive>
+                            <manifestEntries>
+                                <Premain-Class>net.sourceforge.sizeof.SizeOf</Premain-Class>
+                                <Can-Redefine-Classes>true</Can-Redefine-Classes>
+                            </manifestEntries>
+                        </archive>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <configuration>
+
+                        <forkMode>pertest</forkMode>
+                        <argLine>-javaagent:${basedir}/target/sizeof-${project.version}.jar</argLine>
+                        <workingDirectory>${basedir}/target</workingDirectory>
+                        <useSystemClassLoader>true</useSystemClassLoader>
+
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <id>copy</id>
+                            <phase>process-resources</phase>
+                            <goals>
+                                <goal>copy</goal>
+                            </goals>
+                            <configuration>
+                                <artifactItems>
+                                    <artifactItem>
+                                        <groupId>net.sourceforge.sizeof</groupId>
+                                        <artifactId>sizeof</artifactId>
+                                        <version>${project.version}</version>
+                                        <outputDirectory>${project.build.directory}</outputDirectory>
+                                    </artifactItem>
+                                </artifactItems>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+    <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.8.1</version>
+      <scope>test</scope>
+    </dependency>
+    </dependencies>
+</project>

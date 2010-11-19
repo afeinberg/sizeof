@@ -1,0 +1,18 @@
+0.2.2 (2010-11-18)
+-mavenized the build, initial attempt at junit integration
+
+-cleaned up the Javadoc
+
+0.2.1 (2007-10-13)
+=================
+
+-fixed a bug in recognising already processed object (thanks to Saverio Miroddi)
+
+-added ant file in the source distribution
+
+0.2 (2007-04-09)
+================
+
+-improved usability: the new method deepSizeOf doesn't throw any checked exception
+
+-added support for (known) flyweight objects (many thanks to Dr. Heinz Kabutz - www.javaspecialists.co.za)
