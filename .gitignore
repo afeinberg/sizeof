@@ -1,4 +1,8 @@
 *.iml
 *.ipr
 *.iws
+target/classes
+target/test-classes
+target/surefire*
+target/log.txt
 
