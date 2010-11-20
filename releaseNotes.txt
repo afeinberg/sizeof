@@ -1,7 +1,7 @@
 0.2.2 (2010-11-18)
 -mavenized the build, initial attempt at junit integration
 
--cleaned up the Javadoc
+-cleaned up the Javadoc, reformatted code
 
 0.2.1 (2007-10-13)
 =================

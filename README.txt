@@ -1,3 +1,17 @@
+*** NOTE ***
+
+This project was originally available only as an archive on
+Sourceforge. I decided to import the project into github (for easier
+contributions), introduce some commonly used Java tools (junit, maven)
+and make a few stylistic changes in an effort to revive the project.
+
+Most of the development, however, was done by the original
+team. Unfortunately there is no VCS history available for this (it was
+released as a zip file), so original author information is not
+available in the git repository.
+
+- Alex Feinberg (November 2010)
+
 java.SizeOf 0.2 (April 2007)
 ===========================
 
