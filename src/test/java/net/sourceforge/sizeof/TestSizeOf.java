@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import static junit.framework.Assert.assertEquals;
 import static net.sourceforge.sizeof.SizeOf.*;
 
 /**
@@ -20,11 +21,39 @@ public class TestSizeOf {
     // Allows this to be run as a unit test e.g., via mvn test
     @Test
     public void testSizeOf() throws Exception {
-        main(new String[]{});
+        main(new String[]{ });
+    }
+
+    @Test
+    public void testPrimitives()
+    {
+        assertEquals(16, SizeOf.sizeOf(new Object()));
+        assertEquals(16, SizeOf.deepSizeOf(new Object()));
+
+        assertEquals(24, SizeOf.sizeOf(new Integer(0)));
+        assertEquals(24, SizeOf.deepSizeOf(new Integer(0)));
+
+        assertEquals(24, SizeOf.sizeOf(new Object[0]));
+        Object[] objects = new Object[100];
+        assertEquals(24 + 8 * 100, SizeOf.sizeOf(objects));
+        assertEquals(24 + 8 * 100, SizeOf.deepSizeOf(objects));
+        for(int i = 0; i < objects.length; i++) {
+            objects[i] = new Object();
+        }
+        assertEquals(24 + 8 * 100 + 16 * 100, SizeOf.deepSizeOf(objects));
+    }
+
+    @Test
+    public void testCycle()
+    {
+        Dummy dummy = new Dummy();
+        assertEquals(32, sizeOf(dummy));
+        assertEquals(32, deepSizeOf(dummy));
+        dummy.dummy = dummy;
+        assertEquals(32, deepSizeOf(dummy));
     }
 
     public static void main(String[] args) throws FileNotFoundException {
-        print("Starting test...");
         //SizeOf.turnOnDebug();
         SizeOf.skipStaticField(true);
         SizeOf.skipFinalField(true);
@@ -35,17 +64,9 @@ public class TestSizeOf {
         Integer x = 1;
         int _int = 0;
         long _long = 0;
-        Dummy dummy = new Dummy();
         String s;
 
         ArrayList<Integer> aList = new ArrayList<Integer>();
-
-        Object[] oArray = new Object[200];
-
-        //print("simple obj: \t", sizeOf(oArray));
-        dummy.dummy = dummy;
-        dummy.dummy2 = dummy;
-        print("simple obj: \t", deepSizeOf(dummy));
 
         //print("int: \t\t", iterativeSizeOf(_int));
         print("int: \t\t", sizeOf(_int));
@@ -59,8 +80,6 @@ public class TestSizeOf {
         print("not empty string: \t", sizeOf("aaaa"));
         print("not empty string: \t", sizeOf("aaaaaaaa"));
         //print("empty string: \t", iterativeSizeOf(""));
-        print("simple obj: \t", sizeOf(dummy));
-        print("simple obj: \t", deepSizeOf(dummy));
         //print("empty array: \t", sizeOf(aList));
         print("empty list: \t", sizeOf(aList));
 
@@ -72,17 +91,10 @@ public class TestSizeOf {
         for(int i = 11; i < 20; ++i)
             aList.add(i);
         print("20 list no static: \t", sizeOf(aList));
-
-        print("1000 o arr: \t", deepSizeOf(oArray));
     }
 
     public static void print(String msg, long n) {
-
-        print(msg + humanReadable(n));
-    }
-
-    public static void print(String msg) {
-        System.out.println(msg);
+        SizeOf.print(msg + humanReadable(n) + "\n");
     }
 
     public static void heinz() throws IllegalArgumentException, IllegalAccessException, IOException {
@@ -115,7 +127,6 @@ public class TestSizeOf {
     }
 
     private static void measureSize(Object object) {
-        print(object.getClass()
-                    .getSimpleName() + ", shallow=" + sizeOf(object) + ", deep=" + deepSizeOf(object));
+        print(object.getClass().getSimpleName(), deepSizeOf(object));
     }
 }

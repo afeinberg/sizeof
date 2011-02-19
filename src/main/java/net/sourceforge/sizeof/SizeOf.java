@@ -157,7 +157,7 @@ public class SizeOf {
                         size += deepSizeOf(obj, doneObj, depth + 1);
                     } else {
                         if(debug)
-                            print("%s %s = %s\n", indent(depth), field.getName(), obj == null ? null : obj.toString());
+                            print("skipping %s %s = %s\n", indent(depth), field.getName(), obj == null ? null : obj.toString());
                     }
                 }
 
@@ -293,7 +293,7 @@ public class SizeOf {
         SKIP_FLYWEIGHT_FIELD = skip;
     }
 
-    private static void print(String s) {
+    static void print(String s) {
         try {
             out.write(s.getBytes());
         } catch(IOException e) {
