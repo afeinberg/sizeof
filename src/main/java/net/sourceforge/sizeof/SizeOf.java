@@ -27,7 +27,6 @@ public class SizeOf {
 
     private static long MIN_CLASS_SIZE_TO_LOG = Long.MAX_VALUE;
     private static boolean SKIP_STATIC_FIELD = true;
-    private static boolean SKIP_FINAL_FIELD = false;
     private static boolean SKIP_FLYWEIGHT_FIELD = false;
     private static boolean debug = false;
 
@@ -223,8 +222,6 @@ public class SizeOf {
             return false;
         else if(SKIP_STATIC_FIELD && Modifier.isStatic(modificatori))
             return false;
-        else if(SKIP_FINAL_FIELD && Modifier.isFinal(modificatori))
-            return false;
         else
             return true;
     }
@@ -267,14 +264,6 @@ public class SizeOf {
      */
     public static void setMinSizeToLog(long min_class_size_to_log) {
         MIN_CLASS_SIZE_TO_LOG = min_class_size_to_log;
-    }
-
-    /**
-     * If true deepSizeOf() doesn't compute the final fields of an object.
-     * Default value is false.
-     */
-    public static void skipFinalField(boolean skip_final_field) {
-        SKIP_FINAL_FIELD = skip_final_field;
     }
 
     /**

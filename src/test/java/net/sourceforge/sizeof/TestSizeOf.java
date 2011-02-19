@@ -55,8 +55,6 @@ public class TestSizeOf {
 
     public static void main(String[] args) throws FileNotFoundException {
         //SizeOf.turnOnDebug();
-        SizeOf.skipStaticField(true);
-        SizeOf.skipFinalField(true);
         SizeOf.skipFlyweightObject(true);
         //SizeOf.setMinSizeToLog(10);
         SizeOf.setLogOutputStream(new FileOutputStream("log.txt"));
