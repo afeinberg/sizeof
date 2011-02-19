@@ -25,8 +25,8 @@ public class SizeOf {
      */
     private static Instrumentation inst;
 
-    private static long MIN_CLASS_SIZE_TO_LOG = 1024 * 1024;
-    private static boolean SKIP_STATIC_FIELD = false;
+    private static long MIN_CLASS_SIZE_TO_LOG = Long.MAX_VALUE;
+    private static boolean SKIP_STATIC_FIELD = true;
     private static boolean SKIP_FINAL_FIELD = false;
     private static boolean SKIP_FLYWEIGHT_FIELD = false;
     private static boolean debug = false;
@@ -37,8 +37,6 @@ public class SizeOf {
      */
     public static void premain(String options, Instrumentation inst) {
         SizeOf.inst = inst;
-
-        System.out.println("JAVAGENT: call premain instrumentation for class SizeOf");
     }
 
     /**
@@ -170,7 +168,7 @@ public class SizeOf {
         if(debug)
             print("%s} size = %s\n", indent(depth), humanReadable(size));
 
-        if(MIN_CLASS_SIZE_TO_LOG > 0 && size >= MIN_CLASS_SIZE_TO_LOG)
+        if(size >= MIN_CLASS_SIZE_TO_LOG)
             print("Found big object: %s%s@%s size: %s\n", indent(depth), o.getClass()
                                                                           .getName(), System.identityHashCode(o),
                   humanReadable(size));
