@@ -121,7 +121,7 @@ public class SizeOf {
 
         if(doneObj.containsKey(o)) {
             if(debug)
-                print("\n%s{ yet computed }\n", indent(depth));
+                print("\n%s{ already included }\n", indent(depth));
             return 0;
         }
 
@@ -153,7 +153,7 @@ public class SizeOf {
                         throw new RuntimeException(e);
                     }
 
-                    if(isComputable(field)) {
+                    if(isDeep(field)) {
                         if(debug)
                             print("%s %s = ", indent(depth), field.getName());
                         size += deepSizeOf(obj, doneObj, depth + 1);
@@ -218,7 +218,7 @@ public class SizeOf {
      * @param field
      * @return true if the field must be computed
      */
-    private static boolean isComputable(Field field) {
+    private static boolean isDeep(Field field) {
         int modificatori = field.getModifiers();
 
         if(isAPrimitiveType(field.getType()))
