@@ -228,7 +228,9 @@ public class SizeOf {
 
     /**
      * Returns true if this is a well-known shared flyweight.
-     * For example, interned Strings, Booleans and Number objects.
+     * For example, Booleans and cached Number objects.
+     *
+     * We do NOT check for interned strings since there is no API to do so harmlessly.
      * <p/>
      * thanks to Dr. Heinz Kabutz
      * see http://www.javaspecialists.co.za/archive/Issue142.html
@@ -238,8 +240,6 @@ public class SizeOf {
         if(obj instanceof Comparable) {
             if(obj instanceof Enum) {
                 return true;
-            } else if(obj instanceof String) {
-                return (obj == ((String) obj).intern());
             } else if(obj instanceof Boolean) {
                 return (obj == Boolean.TRUE || obj == Boolean.FALSE);
             } else if(obj instanceof Integer) {

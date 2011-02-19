@@ -17,6 +17,7 @@ import static net.sourceforge.sizeof.SizeOf.*;
  * A simple class to test SizeOf behavior
  */
 public class TestSizeOf {
+    private static final int EMPTY_ARRAY_SIZE = 24;
 
     // Allows this to be run as a unit test e.g., via mvn test
     @Test
@@ -33,14 +34,19 @@ public class TestSizeOf {
         assertEquals(24, SizeOf.sizeOf(new Integer(0)));
         assertEquals(24, SizeOf.deepSizeOf(new Integer(0)));
 
-        assertEquals(24, SizeOf.sizeOf(new Object[0]));
+        assertEquals(40, SizeOf.sizeOf(""));
+        assertEquals(40 + EMPTY_ARRAY_SIZE, SizeOf.deepSizeOf(""));
+        assertEquals(40, SizeOf.sizeOf("a"));
+        assertEquals(40 + EMPTY_ARRAY_SIZE + 8, SizeOf.deepSizeOf("a"));
+
+        assertEquals(EMPTY_ARRAY_SIZE, SizeOf.sizeOf(new Object[0]));
         Object[] objects = new Object[100];
-        assertEquals(24 + 8 * 100, SizeOf.sizeOf(objects));
-        assertEquals(24 + 8 * 100, SizeOf.deepSizeOf(objects));
+        assertEquals(EMPTY_ARRAY_SIZE + 8 * 100, SizeOf.sizeOf(objects));
+        assertEquals(EMPTY_ARRAY_SIZE + 8 * 100, SizeOf.deepSizeOf(objects));
         for(int i = 0; i < objects.length; i++) {
             objects[i] = new Object();
         }
-        assertEquals(24 + 8 * 100 + 16 * 100, SizeOf.deepSizeOf(objects));
+        assertEquals(EMPTY_ARRAY_SIZE + 8 * 100 + 16 * 100, SizeOf.deepSizeOf(objects));
     }
 
     @Test
