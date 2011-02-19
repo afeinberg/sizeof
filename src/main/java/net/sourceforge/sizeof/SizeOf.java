@@ -159,7 +159,7 @@ public class SizeOf {
                         size += deepSizeOf(obj, doneObj, depth + 1);
                     } else {
                         if(debug)
-                            print("%s %s = %s\n", indent(depth), field.getName(), obj.toString());
+                            print("%s %s = %s\n", indent(depth), field.getName(), obj == null ? null : obj.toString());
                     }
                 }
 
