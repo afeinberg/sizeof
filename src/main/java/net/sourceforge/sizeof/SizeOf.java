@@ -139,28 +139,31 @@ public class SizeOf {
                 size += deepSizeOf(obj, doneObj, depth + 1);
             }
         } else {
+            Class cls = o.getClass();
+            while(cls != null)
+            {
+                for(Field field : cls.getDeclaredFields()) {
+                    field.setAccessible(true);
+                    Object obj;
+                    try {
+                        obj = field.get(o);
+                    } catch(IllegalArgumentException e) {
+                        throw new RuntimeException(e);
+                    } catch(IllegalAccessException e) {
+                        throw new RuntimeException(e);
+                    }
 
-            Field[] fields = o.getClass().getDeclaredFields();
-
-            for(Field field : fields) {
-                field.setAccessible(true);
-                Object obj;
-                try {
-                    obj = field.get(o);
-                } catch(IllegalArgumentException e) {
-                    throw new RuntimeException(e);
-                } catch(IllegalAccessException e) {
-                    throw new RuntimeException(e);
+                    if(isComputable(field)) {
+                        if(debug)
+                            print("%s %s = ", indent(depth), field.getName());
+                        size += deepSizeOf(obj, doneObj, depth + 1);
+                    } else {
+                        if(debug)
+                            print("%s %s = %s\n", indent(depth), field.getName(), obj.toString());
+                    }
                 }
 
-                if(isComputable(field)) {
-                    if(debug)
-                        print("%s %s = ", indent(depth), field.getName());
-                    size += deepSizeOf(obj, doneObj, depth + 1);
-                } else {
-                    if(debug)
-                        print("%s %s = %s\n", indent(depth), field.getName(), obj.toString());
-                }
+                cls = cls.getSuperclass();
             }
         }
 
