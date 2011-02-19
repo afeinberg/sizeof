@@ -333,6 +333,6 @@ public class SizeOf {
      * Turn off debugging information
      */
     public static void turnOffDebug() {
-        debug = true;
+        debug = false;
     }
 }
