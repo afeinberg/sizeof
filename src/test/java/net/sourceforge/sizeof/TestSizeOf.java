@@ -42,10 +42,10 @@ public class TestSizeOf {
 
     @Test
     public void testCycle() {
-        Dummy dummy = new Dummy();
+        Recursive dummy = new Recursive();
         assertEquals(32, sizeOf(dummy));
         assertEquals(32, deepSizeOf(dummy));
-        dummy.dummy = dummy;
+        dummy.child = dummy;
         assertEquals(32, deepSizeOf(dummy));
     }
 
@@ -72,6 +72,18 @@ public class TestSizeOf {
         assertEquals(0, sizeOf(Thread.State.TERMINATED));
         assertEquals(0, sizeOf(Boolean.TRUE));
         assertEquals(0, sizeOf(Integer.valueOf(0)));
+        skipFlyweightObject(false);
+    }
+
+    @Test
+    public void testDeep() {
+        Recursive root = new Recursive();
+        Recursive recursive = root;
+        for (int i = 0; i < 100000; i++) {
+            recursive.child = new Recursive();
+            recursive = recursive.child;
+        }
+        assertEquals(32 * 100001, deepSizeOf(root));
     }
 
     private static class Parent {
@@ -82,8 +94,8 @@ public class TestSizeOf {
         private int j;
     }
 
-    private static class Dummy {
+    private static class Recursive {
         int i;
-        Dummy dummy = null;
+        Recursive child = null;
     }
 }

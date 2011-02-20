@@ -78,20 +78,6 @@ public class SizeOf {
     }
 
     /**
-     * Compute an implementation-specific approximation of the amount of storage consumed
-     * by objectToSize and by all the objects reachable from it
-     *
-     * @param objectToSize
-     * @return an implementation-specific approximation of the amount of storage consumed
-     *         by objectToSize and by all the objects reachable from it
-     */
-    public static long deepSizeOf(Object objectToSize) {
-        //Set<Integer> doneObj = new HashSet<Integer>();
-        Map<Object, Object> doneObj = new IdentityHashMap<Object, Object>();
-        return deepSizeOf(objectToSize, doneObj, 0);
-    }
-
-    /**
      * @deprecated use deepSizeOf
      */
     public static long iterativeSizeOf(Object objectToSize) throws IllegalArgumentException,
@@ -99,78 +85,85 @@ public class SizeOf {
         return deepSizeOf(objectToSize);
     }
 
-    private static String indent(int depth) {
-        StringBuilder builder = new StringBuilder();
-        for(int i = 0; i < depth; i++)
-            builder.append("  ");
-
-        return builder.toString();
-    }
-
-    private static long deepSizeOf(Object o, Map<Object, Object> doneObj, int depth) {
-        if(o == null) {
+    /**
+     * Compute an implementation-specific approximation of the amount of storage consumed
+     * by objectToSize and by all the objects reachable from it
+     *
+     * @param object
+     * @return an implementation-specific approximation of the amount of storage consumed
+     *         by objectToSize and by all the objects reachable from it
+     */
+    public static long deepSizeOf(Object object) {
+        if(object == null) {
             if(debug)
                 print("null\n");
             return 0;
         }
 
+        Map<Object, Object> seen = new IdentityHashMap<Object, Object>();
+        Stack<Object> stack = new Stack<Object>();
+        stack.push(object);
         long size = 0;
+        while (!stack.isEmpty()) {
+            Object current = stack.pop();
+            assert current != null;
 
-        if(doneObj.containsKey(o)) {
-            if(debug)
-                print("\n%s{ already included }\n", indent(depth));
-            return 0;
-        }
-
-        if(debug)
-            print("\n%s{ %s\n", indent(depth), o.getClass().getName());
-
-        doneObj.put(o, null);
-        size = sizeOf(o);
-
-        if(o instanceof Object[]) {
-            int i = 0;
-            for(Object obj : (Object[]) o) {
+            if(seen.containsKey(current)) {
                 if(debug)
-                    print("%s [%d] = ", indent(depth), i++);
-                size += deepSizeOf(obj, doneObj, depth + 1);
+                    print("\n%s already included\n");
+                continue;
             }
-        } else {
-            Class cls = o.getClass();
-            while(cls != null)
-            {
-                for(Field field : cls.getDeclaredFields()) {
-                    field.setAccessible(true);
-                    Object obj;
-                    try {
-                        obj = field.get(o);
-                    } catch(IllegalArgumentException e) {
-                        throw new RuntimeException(e);
-                    } catch(IllegalAccessException e) {
-                        throw new RuntimeException(e);
-                    }
+            seen.put(current, null);
+            size += sizeOf(current);
 
-                    if(isDeep(field)) {
-                        if(debug)
-                            print("%s %s = ", indent(depth), field.getName());
-                        size += deepSizeOf(obj, doneObj, depth + 1);
-                    } else {
-                        if(debug)
-                            print("skipping %s %s = %s\n", indent(depth), field.getName(), obj == null ? null : obj.toString());
-                    }
+            if(debug)
+                print("\n{ %s\n", current.getClass().getName());
+
+            if(current instanceof Object[]) {
+                int i = 0;
+                for(Object child : (Object[]) current) {
+                    if(debug)
+                        print("[%d] = %s", i++, child);
+                    if (child != null)
+                        stack.push(child);
                 }
+            } else {
+                Class cls = current.getClass();
+                while(cls != null)
+                {
+                    for(Field field : cls.getDeclaredFields()) {
+                        field.setAccessible(true);
+                        Object child;
+                        try {
+                            child = field.get(current);
+                        } catch(IllegalArgumentException e) {
+                            throw new RuntimeException(e);
+                        } catch(IllegalAccessException e) {
+                            throw new RuntimeException(e);
+                        }
 
-                cls = cls.getSuperclass();
+                        if(isDeep(field)) {
+                            if(debug)
+                                print("%s = %s", field.getName(), child);
+                            if (child != null)
+                                stack.push(child);
+                        } else {
+                            if(debug)
+                                print("skipping %s = %s\n", field.getName(), child);
+                        }
+                    }
+
+                    cls = cls.getSuperclass();
+                }
             }
         }
 
         if(debug)
-            print("%s} size = %s\n", indent(depth), humanReadable(size));
+            print("%s} size = %s\n", humanReadable(size));
 
         if(size >= MIN_CLASS_SIZE_TO_LOG)
-            print("Found big object: %s%s@%s size: %s\n", indent(depth), o.getClass()
-                                                                          .getName(), System.identityHashCode(o),
-                  humanReadable(size));
+            print("Found big object: %s@%s size: %s\n",
+                  object.getClass().getName(), System.identityHashCode(object), humanReadable(size));
 
         return size;
     }
