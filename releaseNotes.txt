@@ -17,6 +17,7 @@ available in the git repository.
 0.3 (2011-2-19)
 ===============
 
+- fix size calculation of inherited fields
 - added support for sizing very deeply nested objects
 - removed support for skipping final fields
 - cleaned up test suite
