@@ -1,18 +1,52 @@
-0.2.2 (2010-11-18)
--mavenized the build, initial attempt at junit integration
+*** NOTE ***
 
--cleaned up the Javadoc, reformatted code
+This project was originally available only as an archive on
+Sourceforge. I decided to import the project into github (for easier
+contributions), introduce some commonly used Java tools (junit, maven)
+and make a few stylistic changes in an effort to revive the project.
+
+Most of the development, however, was done by the original
+team. Unfortunately there is no VCS history available for this (it was
+released as a zip file), so original author information is not
+available in the git repository.
+
+- Alex Feinberg (November 2010)
+
+
+
+0.3 (2011-2-19)
+===============
+
+- added support for sizing very deeply nested objects
+- removed support for skipping final fields
+- cleaned up test suite
+
+
+0.2.2 (2010-11-18)
+==================
+
+- mavenized the build, initial attempt at junit integration
+- cleaned up the Javadoc, reformatted code
+
 
 0.2.1 (2007-10-13)
-=================
+==================
 
--fixed a bug in recognising already processed object (thanks to Saverio Miroddi)
+- fixed a bug in recognising already processed object (thanks to
+  Saverio Miroddi)
+- added ant file in the source distribution
 
--added ant file in the source distribution
 
 0.2 (2007-04-09)
 ================
 
--improved usability: the new method deepSizeOf doesn't throw any checked exception
+- improved usability: the new method deepSizeOf doesn't throw any
+  checked exception
+- added support for (known) flyweight objects (many thanks to
+  Dr. Heinz Kabutz - www.javaspecialists.co.za)
 
--added support for (known) flyweight objects (many thanks to Dr. Heinz Kabutz - www.javaspecialists.co.za)
+
+0.1 (June 2006)
+===============
+
+Initial release

@@ -11,7 +11,7 @@
         memory size of java objects. The agent is implemented with the
         java.lang.instrument introduced with java 5.
     </description>
-    <version>0.2.2</version>
+    <version>0.3</version>
     <url>http://sourceforge.net/projects/sizeof</url>
 
     <build>
